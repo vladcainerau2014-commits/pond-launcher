@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pond Launcher</title>
+  <meta name="description" content="A small game launcher with a duck. Put your games on a desk, stack them, and let the duck pick.">
+  <link rel="icon" href="duck.png">
+  <style>
+    :root {
+      --bg: #14171c;
+      --paper: #1d2129;
+      --line: rgba(255, 255, 255, 0.07);
+      --text: #e9ecf1;
+      --muted: #9aa3b2;
+      --accent: #3d7bff;
+      --sun: #ffd166;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: #8fb8ff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .wrap { max-width: 980px; margin: 0 auto; padding: 0 24px; }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 22px 0;
+    }
+    .name {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .name img { width: 26px; height: 26px; object-fit: contain; }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 40px;
+      align-items: center;
+      padding: 56px 0 80px;
+    }
+    .hero h1 {
+      font-size: 46px;
+      line-height: 1.15;
+      margin: 0 0 18px;
+      font-weight: 600;
+      letter-spacing: -0.6px;
+    }
+    .hero .lead {
+      font-size: 18px;
+      color: var(--muted);
+      margin: 0 0 30px;
+      max-width: 460px;
+    }
+    .btn {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      padding: 13px 24px;
+      border-radius: 10px;
+      font-weight: 600;
+      transition: transform 0.15s ease;
+    }
+    .btn:hover { text-decoration: none; transform: translateY(-2px); }
+    .note-small {
+      display: block;
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .duck-wrap {
+      position: relative;
+      height: 260px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .duck-wrap img {
+      width: 240px;
+      height: 240px;
+      object-fit: contain;
+      display: block;
+      animation: bob 3.2s ease-in-out infinite;
+      filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.5));
+    }
+    .bubble {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: #fff;
+      color: #14171c;
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-weight: 600;
+      font-size: 15px;
+      transform: rotate(4deg);
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
+    }
+    .bubble::after {
+      content: "";
+      position: absolute;
+      bottom: -8px;
+      left: 22px;
+      border: 8px solid transparent;
+      border-top-color: #fff;
+      border-bottom: 0;
+    }
+
+    @keyframes bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .note {
+      max-width: 640px;
+      margin: 0 auto 90px;
+      padding: 34px 36px;
+      background: var(--paper);
+      border-radius: 4px 18px 18px 18px;
+      border: 1px solid var(--line);
+      transform: rotate(-0.6deg);
+    }
+    .note h2 {
+      margin: 0 0 12px;
+      font-size: 22px;
+      font-weight: 600;
+    }
+    .note p {
+      margin: 0 0 14px;
+      color: #cdd3dd;
+    }
+    .note p:last-child { margin-bottom: 0; }
+    .sign {
+      color: var(--sun);
+      font-style: italic;
+    }
+
+    .section-title {
+      font-size: 30px;
+      font-weight: 600;
+      margin: 0 0 8px;
+    }
+    .section-sub {
+      color: var(--muted);
+      margin: 0 0 40px;
+    }
+
+    .feature {
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      gap: 18px;
+      padding: 26px 0;
+      border-top: 1px solid var(--line);
+    }
+    .feature:last-child { border-bottom: 1px solid var(--line); }
+    .feature .dot {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(61, 123, 255, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #8fb8ff;
+      font-weight: 600;
+      font-size: 17px;
+    }
+    .feature h3 {
+      margin: 2px 0 6px;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .feature p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 620px;
+    }
+
+    .get {
+      margin: 96px 0 80px;
+      text-align: center;
+    }
+    .get h2 {
+      font-size: 30px;
+      margin: 0 0 10px;
+      font-weight: 600;
+    }
+    .get p {
+      color: var(--muted);
+      margin: 0 auto 26px;
+      max-width: 480px;
+    }
+    .get small {
+      display: block;
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 26px 0 34px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    footer .wrap {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    @media (max-width: 760px) {
+      .hero { grid-template-columns: 1fr; padding: 36px 0 60px; text-align: center; }
+      .hero .lead { margin-left: auto; margin-right: auto; }
+      .hero h1 { font-size: 36px; }
+      .duck-wrap { order: -1; height: 190px; }
+      .duck-wrap img { width: 170px; height: 170px; }
+      .bubble { right: 6%; }
+      .note { padding: 26px 22px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrap">
+    <div class="top">
+      <div class="name">
+        <img src="duck.png" alt="">
+        <span>Pond Launcher</span>
+      </div>
+    </div>
+
+    <section class="hero">
+      <div>
+        <h1>Your games, on a desk.</h1>
+        <p class="lead">
+          Pond Launcher puts your library on a surface you can move things around on.
+          Drag games where you want them, stack them, make folders, and let the duck
+          decide what to play tonight.
+        </p>
+        <a class="btn" href="https://drive.google.com/uc?export=download&id=11U8Wl-cJrJk3mfDtnYlxZ5kX7KNaKQ2V" target="_blank">Download for Windows</a>
+        <span class="note-small">Free. Your Steam games show up on their own.</span>
+      </div>
+
+      <div class="duck-wrap">
+        <div class="bubble">Quack. Pick one?</div>
+        <img src="duck.png" alt="The Pond Launcher duck">
+      </div>
+    </section>
+
+    <section class="note">
+      <h2>Why I made it</h2>
+      <p>
+        Every launcher I used had the same grid of covers in the same order, and I
+        never really looked at it. I wanted something that felt more like my own
+        desk, where the games I play often are near the front and the rest are
+        tucked behind them.
+      </p>
+      <p>
+        So I built this. It is a little odd on purpose. There is a duck. It is
+        not for everyone, but if you like things that feel handmade, I think you
+        will like it.
+      </p>
+      <p class="sign">Thanks for stopping by.</p>
+    </section>
+
+    <h2 class="section-title">What is in it</h2>
+    <p class="section-sub">Not a lot of menus. Mostly things you can touch.</p>
+
+    <div class="feature">
+      <div class="dot">01</div>
+      <div>
+        <h3>Move things around</h3>
+        <p>
+          Drag a game anywhere and the others step aside to make room. Let go between
+          two games and it fits in exactly there. Hold a card on top of another for a
+          second and they become a folder.
+        </p>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="dot">02</div>
+      <div>
+        <h3>A duck that notices</h3>
+        <p>
+          It sleeps late at night. It gets cheerful after a long session and a bit
+          sad if you have not played in a week. It is not a score, just a small
+          reminder that you exist outside the launcher.
+        </p>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="dot">03</div>
+      <div>
+        <h3>Notes after you play</h3>
+        <p>
+          When you close a game, a little box asks what you did. Write a line or skip
+          it. Later you can scroll back through everything you played.
+        </p>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="dot">04</div>
+      <div>
+        <h3>Can't decide?</h3>
+        <p>
+          Spin the wheel. It picks a game, you press play, and nobody has to argue
+          about it.
+        </p>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="dot">05</div>
+      <div>
+        <h3>The colours follow the day</h3>
+        <p>
+          Warm in the morning, cooler in the evening, dark at night. Turn it on in
+          Add-ons and you will not have to think about it.
+        </p>
+      </div>
+    </div>
+
+    <div class="feature">
+      <div class="dot">06</div>
+      <div>
+        <h3>Stop what you started</h3>
+        <p>
+          A small bar appears while something is running, with a Stop button. It is
+          quick, but it does not save your progress for you, so use it kindly.
+        </p>
+      </div>
+    </div>
+
+    <section class="get">
+      <h2>Give it a try</h2>
+      <p>Download the installer, run it, and your library is already there on the desk.</p>
+      <a class="btn" href="https://drive.google.com/uc?export=download&id=11U8Wl-cJrJk3mfDtnYlxZ5kX7KNaKQ2V" target="_blank">Download installer</a>
+      <small>Windows 10 or 11. Steam is optional. The installer is not signed yet, so Windows may ask you to confirm it.</small>
+    </section>
+
+    <footer>
+      <div class="wrap">
+        <span>Made by one person and one duck.</span>
+      </div>
+    </footer>
+  </div>
+
+</body>
+</html>   
